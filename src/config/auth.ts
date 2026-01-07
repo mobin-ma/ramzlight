@@ -1,7 +1,7 @@
 // Authentication settings
 export const AUTH_CONFIG = {
-  // Authentication code - you can change it
-  STATIC_AUTH_CODE: 'ramzlight2024',
+  // Authentication code - you can change it or use environment variable
+  STATIC_AUTH_CODE: process.env.NEXT_PUBLIC_AUTH_CODE || 'ramzlight2024',
   
   // Cookie name
   COOKIE_NAME: 'ramzlight_auth',
@@ -11,4 +11,4 @@ export const AUTH_CONFIG = {
   
   // Cookie value for authentication
   AUTH_TOKEN: 'authenticated'
-};
+} as const;

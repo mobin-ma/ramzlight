@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ReduxProvider } from "@/store/ReduxProvider";
-import Header from "@/components/layout/Header";
-import Sidebar from "@/components/layout/Sidebar";
-import AuthGuard from "@/components/auth/AuthGuard";
+import { Header } from "@/components/layout";
+import { AuthGuard } from "@/features/auth/components";
+import { ErrorBoundary } from "@/components";
 
 
 export const metadata: Metadata = {
@@ -18,19 +18,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fa" dir="rtl">
-      <body
-        className=""
-      >
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </head>
+      <body className="">
         {/* Redux Provider wraps the entire app */}
         <ReduxProvider>
-          <AuthGuard>
-            {/* header */}
-            <Header />
-            <main className="w-full h-[87vh] flex p-7 gap-7">
-              <Sidebar />
-              {children}
-            </main>
-          </AuthGuard>
+          <ErrorBoundary>
+            <AuthGuard>
+              {/* header */}
+              <Header />
+              
+              {/* Main Content - Let pages handle their own layout */}
+              <main className="w-full min-h-[calc(100vh-80px)] p-3 sm:p-5 lg:p-7">
+                {children}
+              </main>
+            </AuthGuard>
+          </ErrorBoundary>
         </ReduxProvider>
       </body>
     </html>

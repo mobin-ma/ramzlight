@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { AUTH_CONFIG } from "@/config/auth";
 import { authenticateUser } from "./auth.services";
-import { LoginCredentials } from "./auth.types";
+import { LoginCredentials } from "./types";
+import { CookieService } from "@/services/cookieService";
 
 // Type definition for the auth state
 interface AuthState {
@@ -29,7 +29,7 @@ export const loginUser = createAsyncThunk(
       } else {
         return rejectWithValue(result.message || 'خطا در ورود');
       }
-    } catch (error) {
+    } catch {
       return rejectWithValue('خطا در برقراری ارتباط');
     }
   }
@@ -39,48 +39,10 @@ export const loginUser = createAsyncThunk(
 export const logoutUser = createAsyncThunk(
   "auth/logoutUser",
   async () => {
-    // Clear cookies
-    if (typeof window !== 'undefined') {
-      document.cookie = `${AUTH_CONFIG.COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Strict`;
-      document.cookie = `${AUTH_CONFIG.COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
-      document.cookie = `${AUTH_CONFIG.COOKIE_NAME}=; max-age=0; path=/`;
-    }
+    CookieService.removeAuthCookie();
     return true;
   }
 );
-
-// Helper function to check cookie
-const checkAuthCookie = (): boolean => {
-  if (typeof window !== 'undefined') {
-    const authCookie = document.cookie
-      .split('; ')
-      .find(row => row.startsWith(`${AUTH_CONFIG.COOKIE_NAME}=`));
-    
-    if (authCookie) {
-      const value = authCookie.split('=')[1];
-      return value === AUTH_CONFIG.AUTH_TOKEN;
-    }
-  }
-  return false;
-};
-
-// Helper function to set cookie
-const setAuthCookie = (): void => {
-  const expirationDate = new Date();
-  expirationDate.setDate(expirationDate.getDate() + AUTH_CONFIG.COOKIE_EXPIRY_DAYS);
-  
-  document.cookie = `${AUTH_CONFIG.COOKIE_NAME}=${AUTH_CONFIG.AUTH_TOKEN}; expires=${expirationDate.toUTCString()}; path=/; SameSite=Strict`;
-};
-
-// Helper function to remove cookie
-const removeAuthCookie = (): void => {
-  if (typeof window !== 'undefined') {
-    // Several ways to clear cookies
-    document.cookie = `${AUTH_CONFIG.COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Strict`;
-    document.cookie = `${AUTH_CONFIG.COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
-    document.cookie = `${AUTH_CONFIG.COOKIE_NAME}=; max-age=0; path=/`;
-  }
-};
 
 // Redux slice for authentication
 const authSlice = createSlice({
@@ -89,7 +51,7 @@ const authSlice = createSlice({
   reducers: {
     // Initialize auth state from cookie
     initializeAuth: (state) => {
-      state.isAuthenticated = checkAuthCookie();
+      state.isAuthenticated = CookieService.checkAuthCookie();
       state.isLoading = false;
       state.error = null;
     },
@@ -102,7 +64,7 @@ const authSlice = createSlice({
     loginSuccess: (state) => {
       state.isAuthenticated = true;
       state.error = null;
-      setAuthCookie();
+      CookieService.setAuthCookie();
     },
     
     loginFailure: (state, action: PayloadAction<string>) => {
@@ -114,7 +76,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.isAuthenticated = false;
       state.error = null;
-      removeAuthCookie();
+      CookieService.removeAuthCookie();
     },
     
     // Clear error
@@ -133,7 +95,7 @@ const authSlice = createSlice({
         state.isLoginLoading = false;
         state.isAuthenticated = true;
         state.error = null;
-        setAuthCookie();
+        CookieService.setAuthCookie();
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoginLoading = false;

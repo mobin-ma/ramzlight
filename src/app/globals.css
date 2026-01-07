@@ -6,13 +6,20 @@ body {
 
 .header {
   @apply 
-    w-full sticky top-0
+    w-full sticky top-0 z-30
     bg-[#17161c]/50 backdrop-blur-lg
     border-b border-[#1f2025]
-    grid grid-cols-[auto_auto_auto_100]
-    items-center
-    px-10 py-5
+    flex items-center justify-between
+    px-4 sm:px-6 lg:px-10 
+    py-3 sm:py-4 lg:py-5
     ;
+}
+
+/* Responsive header grid for desktop */
+@media (min-width: 1024px) {
+  .header {
+    @apply grid grid-cols-[auto_1fr_auto_auto] gap-4;
+  }
 }
 
 /* Line clamp utility */
@@ -23,10 +30,52 @@ body {
   overflow: hidden;
 }
 
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* Hide scrollbar for all browsers */
 * {
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+*::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Responsive utilities */
+.scrollable {
+  @apply overflow-y-auto;
+}
+
+/* Mobile-first responsive breakpoints */
+@media (max-width: 640px) {
+  .container {
+    @apply px-4;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  .container {
+    @apply px-6;
+  }
+}
+
+@media (min-width: 769px) {
+  .container {
+    @apply px-8;
+  }
+}
+
+/* Touch-friendly interactions for mobile */
+@media (max-width: 768px) {
+  button, .cursor-pointer {
+    @apply min-h-[44px] min-w-[44px];
+  }
 }
 
 *::-webkit-scrollbar {
@@ -156,4 +205,230 @@ body {
 
 .transition-bounce {
   transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Custom animations for responsive design */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-fade-in-left {
+  animation: fadeInLeft 0.6s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.6s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s ease-out forwards;
+}
+
+.animate-stagger-1 {
+  animation-delay: 0.1s;
+}
+
+.animate-stagger-2 {
+  animation-delay: 0.2s;
+}
+
+.animate-stagger-3 {
+  animation-delay: 0.3s;
+}
+
+.animate-stagger-4 {
+  animation-delay: 0.4s;
+}
+
+.transition-smooth {
+  transition: all 0.3s ease;
+}
+
+.transition-bounce {
+  transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  /* Reduce animation intensity on mobile for better performance */
+  .animate-fade-in-up,
+  .animate-fade-in-left,
+  .animate-slide-in-right,
+  .animate-scale-in {
+    animation-duration: 0.4s;
+  }
+  
+  /* Improve touch targets */
+  .cursor-pointer {
+    @apply active:scale-95;
+  }
+  
+  /* Better spacing for mobile */
+  .space-y-3 > * + * {
+    margin-top: 0.5rem;
+  }
+}
+/* Z-index layers for proper stacking */
+.z-30 { z-index: 30; }  /* Header */
+.z-40 { z-index: 40; }  /* Sidebar drawer overlay & FAB */
+.z-45 { z-index: 45; }  /* Mobile menu overlay */
+.z-50 { z-index: 50; }  /* Mobile menu */
+
+/* Floating Action Button styles */
+.floating-action-button {
+  @apply fixed bottom-6 right-6 z-40;
+  @apply w-14 h-14 bg-amber-600 hover:bg-amber-700;
+  @apply text-white rounded-full shadow-lg hover:shadow-xl;
+  @apply transition-all duration-300 ease-out;
+  @apply transform hover:scale-110 active:scale-95;
+  @apply flex items-center justify-center;
+}
+
+/* Drawer animations */
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.drawer-enter {
+  animation: slideInFromRight 0.3s ease-out forwards;
+}
+
+.drawer-exit {
+  animation: slideOutToRight 0.3s ease-out forwards;
+}
+
+/* Prevent scroll when drawer is open */
+.drawer-open {
+  overflow: hidden;
+}
+
+/* Better touch targets for mobile */
+@media (max-width: 768px) {
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+  
+  /* Improve button spacing */
+  .mobile-button-spacing > * + * {
+    margin-top: 0.75rem;
+  }
+}
+/* Enhanced blur effects for drawers and overlays */
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.backdrop-blur-lg {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Glassmorphism effect for drawer backgrounds */
+.glass-effect {
+  background: rgba(25, 25, 33, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Enhanced shadow for drawers */
+.drawer-shadow {
+  box-shadow: 
+    -10px 0 25px -5px rgba(0, 0, 0, 0.3),
+    -4px 0 10px -2px rgba(0, 0, 0, 0.2);
+}
+
+/* Smooth transitions for all drawer elements */
+.drawer-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Better overlay with gradient */
+.overlay-gradient {
+  background: linear-gradient(
+    to left,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.6) 50%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+}
+
+/* Mobile-specific blur optimizations */
+@media (max-width: 768px) {
+  .backdrop-blur-lg {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  
+  .backdrop-blur-sm {
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+}
+
+/* Fallback for browsers that don't support backdrop-filter */
+@supports not (backdrop-filter: blur(1px)) {
+  .backdrop-blur-sm,
+  .backdrop-blur-lg {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
 }

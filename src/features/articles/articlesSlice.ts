@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getAllArticles, getArticleById } from "./articles.services";
-import { Article, ArticlesResponse } from "./articles.types";
+import { getAllArticles, getArticleById } from "./articlesServices";
+import { Article, ArticlesResponse } from "./types";
 
 // Type definition for the articles state
 interface ArticlesState {

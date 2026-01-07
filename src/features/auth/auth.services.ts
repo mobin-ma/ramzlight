@@ -1,5 +1,6 @@
+import { LoginCredentials, AuthResponse } from "./types";
+import { CookieService } from "@/services/cookieService";
 import { AUTH_CONFIG } from "@/config/auth";
-import { LoginCredentials, AuthResponse } from "./auth.types";
 
 // Static authentication service
 export const authenticateUser = async (credentials: LoginCredentials): Promise<AuthResponse> => {
@@ -21,15 +22,5 @@ export const authenticateUser = async (credentials: LoginCredentials): Promise<A
 
 // Check if user is authenticated (from cookie)
 export const checkAuthStatus = (): boolean => {
-  if (typeof window !== 'undefined') {
-    const authCookie = document.cookie
-      .split('; ')
-      .find(row => row.startsWith(`${AUTH_CONFIG.COOKIE_NAME}=`));
-    
-    if (authCookie) {
-      const value = authCookie.split('=')[1];
-      return value === AUTH_CONFIG.AUTH_TOKEN;
-    }
-  }
-  return false;
+  return CookieService.checkAuthCookie();
 };

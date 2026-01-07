@@ -1,8 +1,8 @@
 'use client';
 
-import { useAuth } from '@/hooks/useAuth';
-import LoginPage from './LoginPage';
-import Loading from '@/components/ui/Loading';
+import { useAuth } from '@/shared/hooks';
+import { LoginPage } from './';
+import { Loading } from '@/shared/ui';
 
 interface AuthGuardProps {
   children: React.ReactNode;
